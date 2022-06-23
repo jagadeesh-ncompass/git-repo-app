@@ -1,10 +1,37 @@
-import { Module } from '@nestjs/common';
+import { AuthModule } from './auth/auth.module';
+import { ReportsModule } from './reports/reports.module';
+import { UserModule } from './users/user.module';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users/entity/user.entity';
+import 'dotenv/config';
+import { Report } from './reports/entity/reports.entity';
+import { currentUser } from './users/middleware/current-user.middleware';
+import { UserController } from './users/user.controller';
 
 @Module({
-  imports: [],
+  imports: [
+    AuthModule,
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST,
+      port: 3306,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      entities: [User, Report],
+      synchronize: true,
+    }),
+    ReportsModule,
+    UserModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(currentUser).forRoutes(UserController);
+  }
+}
