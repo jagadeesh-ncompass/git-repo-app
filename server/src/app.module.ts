@@ -7,12 +7,14 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entity/user.entity';
 import 'dotenv/config';
-import { Report } from './reports/entity/reports.entity';
+import { Repo } from './reports/entity/reports.entity';
 import { currentUser } from './users/middleware/current-user.middleware';
 import { UserController } from './users/user.controller';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     AuthModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -21,7 +23,7 @@ import { UserController } from './users/user.controller';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, Report],
+      entities: [User, Repo],
       synchronize: true,
     }),
     ReportsModule,

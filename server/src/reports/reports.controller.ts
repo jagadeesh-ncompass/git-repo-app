@@ -1,31 +1,22 @@
-import {Controller, Get, Post, Body, Patch, Param, Request,UseGuards} from '@nestjs/common';
-import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
-import { ApproveReportDto } from './dto/approveReport.dto';
-import { CreateReportDto } from './dto/createReport.dto';
+import { Controller, Get } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { ReportsService } from './reports.service';
 
-@Controller('report')
+@Controller('repo')
 export class ReportsController {
   constructor(private readonly reportService: ReportsService) {}
 
-  @UseGuards(AuthenticatedGuard)
-  @Post('/create')
-  create(@Request() req, @Body() createReport: CreateReportDto) {
-    return this.reportService.create(createReport, req.user);
+  @Cron('* 1 * * * *')
+  handleCron() {
+    this.reportService.cronFunc();
   }
-
-  @Get('/readall')
-  findAll() {
-    return this.reportService.findAll();
-  }
-
-  @UseGuards(AuthenticatedGuard)
-  @Patch('/approvereport/:id')
-  approveReport(
-    @Param('id') id: string,
-    @Body() approve: ApproveReportDto,
-    @Request() req,
-  ) {
-    return this.reportService.approveReport(+id, approve, req.user);
+  @Get('/repo')
+  async repo() {
+    const data = await this.reportService.readRepo();
+    await Promise.all(
+      data.map(async (x) => {
+        await this.reportService.createRepo(x);
+      }),
+    );
   }
 }

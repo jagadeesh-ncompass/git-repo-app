@@ -1,4 +1,16 @@
-import {BadRequestException, Body, Controller, NotFoundException, Post, Request, Session, UseGuards, UsePipes, ValidationPipe} from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+  Request,
+  Session,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { UsersDto } from './dto/user.dto';
 import { UserService } from './user.service';
@@ -16,7 +28,7 @@ export class UserController {
   @Post('/create')
   @UsePipes(ValidationPipe)
   async createUsers(@Body() data: UsersDto) {
-    const findUser = await this.userService.readEmail(data.email);
+    const findUser = await this.userService.readUser(data.username);
     if (findUser) {
       throw new BadRequestException('User already exist');
     }
@@ -27,10 +39,21 @@ export class UserController {
     return this.success('User created', user);
   }
 
-
   @Post('/logout')
   logout(@Session() ses: any) {
     ses = null;
+  }
+
+  @Get('/repo')
+  async repo() {
+    const data = await this.userService.readRepo();
+    const result = [];
+    result.push(
+      data.map((x) => {
+        return x;
+      }),
+    );
+    return result;
   }
 
   success(message: string, data) {
@@ -40,5 +63,4 @@ export class UserController {
       data: data,
     };
   }
-  
 }
