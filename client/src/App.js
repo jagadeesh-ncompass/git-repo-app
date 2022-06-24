@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
-
 import "./styles.css";
 
 function App() {
+  
   // React States
   const [errorMessages, setErrorMessages] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -75,14 +74,13 @@ function App() {
     </div>
   );
 
-  return (
+  return (    
     <div className="app">
       <div className="login-form">
         <div className="title">Login</div>
-        {isSubmitted ? <div>User is successfully logged in</div> : renderForm}
+        {isSubmitted ? <div>Welcome, User</div> : renderForm}
       </div>
     </div>
   );
 }
-
 export default App;
