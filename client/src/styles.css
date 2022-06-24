@@ -22,7 +22,7 @@ input[type="submit"] {
   cursor: pointer;
   font-size: 15px;
   background: #492074;
-  border: 1px solid #000000;
+  border:1px solid #000000;
   color: #fff;
   padding: 10px 20px;
 }
@@ -38,7 +38,7 @@ input[type="submit"]:hover {
 
 .login-form {
   background-color: rgb(255, 215, 83);
-  padding: 2rem;
+  padding: 3rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
