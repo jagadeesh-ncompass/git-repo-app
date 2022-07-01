@@ -1,21 +1,51 @@
-import { AuthModule } from './auth/auth.module';
-import { ReportsModule } from './reports/reports.module';
-import { UserModule } from './users/user.module';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entity/user.entity';
-import 'dotenv/config';
-import { Repo } from './reports/entity/reports.entity';
-import { currentUser } from './users/middleware/current-user.middleware';
-import { UserController } from './users/user.controller';
-import { ScheduleModule } from '@nestjs/schedule';
+import { AuthModule } from './auth/auth.module';
+import { Repo } from './repository/entities/repository.entity';
+import { RepositoryModule } from './repository/repository.module';
+import { UsersModule } from './users/users.module';
+import * as redisStore from 'cache-manager-redis-store';
+import { ConfigModule } from '@nestjs/config';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
-    AuthModule,
+    ConfigModule.forRoot(),
+    CacheModule.register({
+      store: redisStore,
+      socket: {
+        host: process.env.HOST,
+        port: 6379,
+      },
+    }),
+    WinstonModule.forRoot({
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json(),
+      ),
+      transports: [
+        new winston.transports.File({
+          dirname: './log',
+          filename: 'info.log',
+          level: 'info',
+        }),
+        new winston.transports.File({
+          dirname: './log',
+          filename: 'debug.log',
+          level: 'debug',
+        }),
+        new winston.transports.File({
+          dirname: './log',
+          filename: 'error.log',
+          level: 'error',
+        }),
+      ],
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -23,17 +53,15 @@ import { ScheduleModule } from '@nestjs/schedule';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, Repo],
+      entities: [Repo, User],
       synchronize: true,
     }),
-    ReportsModule,
-    UserModule,
+    UsersModule,
+    RepositoryModule,
+    AuthModule,
+    JwtModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(currentUser).forRoutes(UserController);
-  }
-}
+export class AppModule {}
