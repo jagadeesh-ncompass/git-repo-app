@@ -111,3 +111,6 @@ Repo details will be fetched after logging in
 
 ## DASHBOARD PAGE
 ![Alt text](images/dashboard.png)
+## System Architecture
+![](images/Sys_design.png)
+
