@@ -32,7 +32,7 @@ cd server && npm install
 npm start or npm run start:dev in development
 ```
 
-## How to start cron
+## Start Cron
 ```
 # install packages
 cd cron && npm install
@@ -40,7 +40,7 @@ cd cron && npm install
 npm start
 ```
 
-## How to run Frontend
+## Start Frontend
 ```
 # install packages
 cd client && npm install
