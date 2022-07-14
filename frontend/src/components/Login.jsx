@@ -30,7 +30,7 @@ export default function Login() {
         return res.json();
       })
       .then((data) => {
-        if (data.statusCode && data.statusCode === 403) {
+        if (data.statusCode && data.statusCode === 401) {
           setError(true);
           return;
         }
@@ -45,7 +45,7 @@ export default function Login() {
 
   return (
     <div className="form">
-      <h1>Login Form</h1>
+      <h1>Login</h1>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="input-container">
           <label>Email </label>
