@@ -1,3 +1,22 @@
+# Git Repo App
+
+Use github username in login page to get your repositories.
+
+## Tech Stack
+
+### Frontend
+- [React](https://reactjs.org/)
+
+### Backend
+- [NestJS](https://nestjs.com/)
+- [TypeORM](https://typeorm.io/)
+- [MySQL](https://www.mysql.com/)
+
+### CRON
+- [NodeJS](https://nodejs.org/)
+- [Cron](https://www.npmjs.com/package/node-cron) - cron command-line utility is a job scheduler on Unix-like operating systems. Users who set up and maintain software environments use cron to schedule jobs, also known as cron jobs, to run periodically at fixed times, dates, or intervals.
+
+
 
 ## Start Redis
 
